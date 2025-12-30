@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Store Book</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <style>
+      .img-modal {
+        max-width: 80%;
+        max-height: 320px;
+        object-fit: contain;
+        display: block;
+        margin: auto;
+      }
+      .card {
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .card:hover {
+        box-shadow: 0 0 20px rgba(13, 110, 253, 0.6);
+        transform: translateY(-6px);
+      }
+      .btnDetail:hover {
+        background-color: #0d6efd;
+        color: #fff;
+      }
+      .judul-koleksi {
+        font-weight: 700;
+        position: relative;
+        display: inline-block;
+        padding-bottom: 10px;
+      }
+
+      .judul-koleksi::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        width: 60%;
+        height: 3px;
+        background: #0d6efd;
+        transform: translateX(-50%);
+        border-radius: 10px;
+      }
+
+      /* ===== DESKRIPSI KOLEKSI ===== */
+      .deskripsi-koleksi {
+        max-width: 500px;
+        margin: 10px auto 0;
+        color: #6c757d;
+        font-size: 15px;
+        transition: color 0.3s ease;
+      }
+
+      .deskripsi-koleksi:hover {
+        color: #0d6efd;
+      }
+      /* ===== NAVBAR LINK ===== */
+      nav ul li a {
+        position: relative;
+        padding-bottom: 4px;
+        transition: color 0.3s ease;
+      }
+
+      nav ul li a::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 2px;
+        left: 0;
+        bottom: 0;
+        background-color: #0d6efd;
+        transition: width 0.3s ease;
+      }
+
+      nav ul li a:hover {
+        color: #0d6efd;
+      }
+
+      nav ul li a:hover::after {
+        width: 100%;
+      }
+      /* ===== WELCOME SCREEN ===== */
+      #welcomeScreen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(13, 110, 253, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+
+      .welcome-box {
+        background: white;
+        padding: 40px;
+        border-radius: 15px;
+        text-align: center;
+        max-width: 500px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .welcome-box h1 {
+        font-weight: bold;
+        margin-bottom: 15px;
+      }
+
+      .welcome-box p {
+        color: #6c757d;
+      }
+      .badge-stok {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        color: white;
+        z-index: 10;
+      }
+
+      .stok-ada {
+        background-color: #198754;
+      }
+
+      .stok-habis {
+        background-color: #dc3545;
+      }
+      .modal-content {
+        animation: zoomIn 0.3s ease;
+      }
+
+      @keyframes zoomIn {
+        from {
+          transform: scale(0.85);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      .badge-best {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: #0d6efd;
+        color: white;
+        padding: 5px 10px;
+        font-size: 12px;
+        border-radius: 12px;
+        z-index: 10;
+      }
+      .badge-limited {
+  position: absolute;
+  top: 45px;
+  left: 10px;
+  background: #ffc107;
+  color: #000;
+  padding: 5px 10px;
+  font-size: 12px;
+  border-radius: 12px;
+  font-weight: bold;
+  z-index: 10;
+}
+.badge-best,
+.badge-limited,
+.badge-stok {
+  animation: fadeScale 0.4s ease;
+}
+
+@keyframes fadeScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.judul-brand {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #212529;
+  position: relative;
+}
+
+.judul-brand::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 4px;
+  background: #0d6efd;
+  margin-top: 8px;
+  border-radius: 10px;
+}
+
+
+    </style>
+  </head>
+  <body class="bg-secondary">
+    <!-- WELCOME SCREEN -->
+    <div id="welcomeScreen">
+      <div class="welcome-box">
+        <h1>📚 Selamat Datang di Store Book</h1>
+        <p>
+          Temukan buku favoritmu dengan cerita penuh makna dan harga bersahabat.
+        </p>
+
+        <div class="mt-4">
+          <button class="btn btn-primary me-2" onclick="masukProduk()">
+            Lihat Produk
+          </button>
+          <button class="btn btn-outline-secondary" onclick="tutupWeb()">
+            Batal
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="container p-0 mb-4 mt-4 rounded-3 shadow bg-white">
+      <!-- menu -->
+      <nav class="d-md-flex p-4">
+        <div><h1 class="judul-brand">SEMOGA SUKA </h1></div>
+        <div class="ms-auto my-auto">
+          <ul class="list-inline m-0">
+            <li class="list-inline-item mx-md-3">
+              <a href="#koleksi" class="text-decoration-none text-dark fw-bold"
+                >Produk Kami</a
+              >
+            </li>
+            <li class="list-inline-item mx-md-3">
+              <a href="#tentang" class="text-decoration-none text-dark fw-bold"
+                >Tentang Kami</a
+              >
+            </li>
+            <li class="list-inline-item mx-md-3">
+              <a
+                href="#cara order"
+                class="text-decoration-none text-dark fw-bold"
+                >Cara Order</a
+              >
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- banner -->
+      <div class="px-4 mb-4">
+        <img src="image/images/BANNERRR.jpg" class="w-100 rounded-3" />
+      </div>
+
+      <!-- catalog -->
+      <div class="text-center my-5" id="koleksi">
+        <h3 class="judul-koleksi">📚 Koleksi Buku Pilihan</h3>
+        <p class="deskripsi-koleksi">
+          Kumpulan buku dengan cerita menarik, penuh makna, dan siap nemenin
+          waktu santai kamu.
+        </p>
+      </div>
+
+      <div id="listBuku" class="row row-cols-md-3 row-cols-2 gx-5 p-5">
+        <div class="col mb-5">
+          <div class="card shadow" data-id="1">
+            <span class="badge-stok"></span>
+           <span class="badge-best" style="display:none;">⭐ Best Seller</span>
+           <span class="badge-limited" style="display:none;">⚠ Limited</span>
+           <img src="image/images/book1.jpeg" class="card-img-top" alt="..." />
+            <div class="card-body">
+              <p class="card-text">Bandung After Rain.</p>
+              <p class="stok text-muted">
+                Stok: <span class="stokJumlah"></span>
+              </p>
+            </div>
+            <div class="card-footer d-md-flex">
+              <a class="btn btn-sm btn-primary d-block btnDetail">detail</a>
+              <span
+                class="ms-auto text-danger fw-bold d-block text-center harga"
+                >Rp.300.000</span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col mb-5">
+          <div class="card shadow" data-id="2">
+            <span class="badge-stok"></span>
+            <span class="badge-best" style="display:none;">⭐ Best Seller</span>
+            <span class="badge-limited" style="display:none;">⚠ Limited</span>
+            <img src="image/images/book9.jpeg" class="card-img-top" alt="..." />
+            <div class="card-body">
+              <p class="card-text">Dilan 1990.</p>
+              <p class="stok text-muted">
+                Stok: <span class="stokJumlah"></span>
+              </p>
+            </div>
+            <div class="card-footer d-md-flex">
+              <a class="btn btn-sm btn-primary d-block btnDetail">detail</a>
+              <span
+                class="ms-auto text-danger fw-bold d-block text-center harga"
+                >Rp.270.000</span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col mb-5">
+          <div class="card shadow" data-id="3">
+            <span class="badge-stok"></span>
+           <span class="badge-best" style="display:none;">⭐ Best Seller</span>
+           <span class="badge-limited" style="display:none;">⚠ Limited</span>
+
+
+            <img src="image/images/book3.jpeg" class="card-img-top" alt="..." />
+            <div class="card-body">
+              <p class="card-text">Laut Bercerita.</p>
+              <p class="stok text-muted">
+                Stok: <span class="stokJumlah"></span>
+              </p>
+            </div>
+        
+            <div class="card-footer d-md-flex">
+              <a class="btn btn-sm btn-primary d-block btnDetail">detail</a>
+              <span
+                class="ms-auto text-danger fw-bold d-block text-center harga"
+                >Rp.170.000</span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col mb-5">
+          <div class="card shadow" data-id="4">
+            <span class="badge-stok"></span>
+           <span class="badge-best" style="display:none;">⭐ Best Seller</span>
+           <span class="badge-limited" style="display:none;">⚠ Limited</span>
+
+
+            <img src="image/images/book8.jpeg" class="card-img-top" alt="..." />
+            <div class="card-body">
+              <p class="card-text">Milea:Suara Dari Dilan.</p>
+              <p class="stok text-muted">
+                Stok: <span class="stokJumlah"></span>
+              </p>
+            </div>
+            
+            <div class="card-footer d-md-flex">
+              <a class="btn btn-sm btn-primary d-block btnDetail">detail</a>
+              <span
+                class="ms-auto text-danger fw-bold d-block text-center harga"
+                >Rp.450.000</span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col mb-5">
+          <div class="card shadow" data-id="5">
+            <span class="badge-stok"></span>
+            <span class="badge-best" style="display:none;">⭐ Best Seller</span>
+            <span class="badge-limited" style="display:none;">⚠ Limited</span>
+
+
+            <img src="image/images/book7.jpeg" class="card-img-top" alt="..." />
+            <div class="card-body">
+              <p class="card-text">Ancika.</p>
+              <p class="stok text-muted">
+                Stok: <span class="stokJumlah"></span>
+              </p>
+            </div>
+           
+            <div class="card-footer d-md-flex">
+              <a class="btn btn-sm btn-primary d-block btnDetail">detail</a>
+              <span
+                class="ms-auto text-danger fw-bold d-block text-center harga"
+                >Rp.220.000</span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col mb-5">
+          <div class="card shadow" data-id="6">
+            <span class="badge-stok"></span>
+           <span class="badge-best" style="display:none;">⭐ Best Seller</span>
+           <span class="badge-limited" style="display:none;">⚠ Limited</span>
+
+
+            <img src="image/images/book6.jpeg" class="card-img-top" alt="..." />
+            <div class="card-body">
+              <p class="card-text">Seporsi Mie Ayam Sebelum Besok MTK.</p>
+              <p class="stok text-muted">
+                Stok: <span class="stokJumlah"></span>
+              </p>
+            </div>
+            
+            <div class="card-footer d-md-flex">
+              <a class="btn btn-sm btn-primary d-block btnDetail">detail</a>
+              <span
+                class="ms-auto text-danger fw-bold d-block text-center harga"
+                >Rp.110.000</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- tentang kami -->
+      <div id="tentang" class="px-4 py-4 bg-secondary text-center">
+        <div class="mx-auto w-75">
+          <h3 class="text-white">Tentang Kami</h3>
+          <p class="text-center text-white">
+            Storebook dikelola oleh tiga orang yang sama-sama punya minat di
+            dunia literasi dan kreativitas digital. Kami berkomitmen
+            menghadirkan produk berkualitas, mudah diakses, dan tentu saja
+            dibuat dengan hati. Storebook bukan sekadar tugas kelompok — ini
+            adalah langkah awal kami untuk membangun sesuatu yang bermakna.
+          </p>
+        </div>
+      </div>
+
+      <!-- cara order -->
+      <div id="cara order" class="px-4 py-4 bg-light text-center">
+        <div class="mx-auto w-75">
+          <h3 class="">Cara Order</h3>
+          <p class="text-center">
+            Pilih produk yang kamu inginkan. Klik tombol “Beli” pada halaman
+            detail produk. Kamu akan otomatis diarahkan ke WhatsApp. Kirimkan
+            detail pesananmu ke admin kami untuk proses lebih lanjut. Praktis
+            dan cepat, cukup beberapa klik aja!
+          </p>
+        </div>
+      </div>
+
+      <!-- copyright -->
+      <div class="text-center p-4 border-top text-muted">
+  © 2025 Store Book • Dibuat dengan ❤️ oleh Tim StoreBook
+</div>
+
+    <!-- modal -->
+
+    <button
+      type="button"
+      class="btn btn-primary d-none btnModal"
+      data-bs-toggle="modal"
+      data-bs-target="#exampleModal"
+    >
+      Launch demo modal
+    </button>
+
+    <div
+      class="modal fade"
+      id="exampleModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5 modalTitle" id="exampleModalLabel"></h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body row">
+            <div class="modalImage col-md-6 col-12"></div>
+            <div class="col-md-6 col-12">
+              <div class="modalDeskripsi"></div>
+              <p class="fw-bold text-muted modalStok"></p>
+              <div class="d-md-flex">
+                <a href="" class="btn btn-sm btn-warning d-block btnBeli"
+                  >Beli Prodak Ini</a
+                >
+                <span
+                  class="ms-auto text-danger fw-bold d-block text-center modalHarga"
+                ></span>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"
+    ></script>
+    <script src="javascript/main.js"></script>
+  </body>
+</html>
